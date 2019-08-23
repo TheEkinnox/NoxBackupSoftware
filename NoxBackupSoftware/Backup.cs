@@ -12,6 +12,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -90,14 +91,14 @@ namespace NoxBackupSoftware
 
         public async Task AutoSave()
         {
-            this.Chrono = Stopwatch.StartNew();
+            this.Chrono = new Stopwatch();
             AutoSaveLoop:
             try
             {
                 this.Chrono.Restart();
-                while (this.Chrono.ElapsedMilliseconds / 1000f < this.Frequence)
-                {
-                }
+
+                TimeSpan frequence = TimeSpan.FromSeconds(this.Frequence);
+                Thread.Sleep(frequence);
 
                 await Utilitaire.CreerSauvegardeAsync(this);
                 goto AutoSaveLoop;
