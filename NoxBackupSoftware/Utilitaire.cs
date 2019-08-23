@@ -235,7 +235,6 @@ namespace NoxBackupSoftware
             // Call WaitForExit and then the using statement will close.
 
             using (Process exeProcess = Process.Start(startInfo))
-
             {
                 if (exeProcess != null) exeProcess.WaitForExit();
             }
