@@ -3,7 +3,7 @@
 // Nom du fichier : Utilitaire.cs
 // Auteur : Loick OBIANG (1832960)
 // Date de création : 2019-08-18
-// Date de modification : 2019-08-22
+// Date de modification : 2019-08-23
 
 #endregion
 
@@ -112,8 +112,6 @@ namespace NoxBackupSoftware
             try
             {
                 FileStream fileStream = new FileStream(Utilitaire.CheminData + Utilitaire.BackupsFile, FileMode.OpenOrCreate);
-                //if (!File.Exists(Utilitaire.CheminData + Utilitaire.BackupsFile))
-                //    File.Create(Utilitaire.CheminData + Utilitaire.BackupsFile);
                 fileStream.Close();
                 XmlDocument backupsXml = new XmlDocument();
                 XmlDeclaration xmlDeclaration = backupsXml.CreateXmlDeclaration("1.0", "utf-8", null);
@@ -196,10 +194,10 @@ namespace NoxBackupSoftware
                 string nomFichier = cheminFichier.Substring(cheminFichier.LastIndexOf('\\') + 1);
                 if (!Directory.Exists(backup.Destination + $"\\{nomSauvegarde}"))
                     Directory.CreateDirectory(backup.Destination + $"\\{nomSauvegarde}");
-                if(!dossier)
+                if (!dossier)
                     File.Copy(cheminFichier,
-                            backup.Destination + $"\\{nomSauvegarde}\\{nomFichier}",
-                            File.Exists(backup.Destination + $"\\{nomSauvegarde}\\{nomFichier}"));
+                        backup.Destination + $"\\{nomSauvegarde}\\{nomFichier}",
+                        File.Exists(backup.Destination + $"\\{nomSauvegarde}\\{nomFichier}"));
                 else
                     Utilitaire.Xcopy(cheminFichier,
                         backup.Destination + $"\\{nomSauvegarde}\\{nomFichier}");
@@ -226,30 +224,20 @@ namespace NoxBackupSoftware
             //make the window Hidden
 
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.CreateNoWindow = false;
+            startInfo.CreateNoWindow = true;
 
             //Send the Source and destination as Arguments to the process
 
             startInfo.Arguments = "\"" + solutionDirectory + "\"" + " " + "\"" + targetDirectory + "\"" + @" /e /y /I";
 
-            try
+            // Start the process with the info we specified.
+
+            // Call WaitForExit and then the using statement will close.
+
+            using (Process exeProcess = Process.Start(startInfo))
 
             {
-                // Start the process with the info we specified.
-
-                // Call WaitForExit and then the using statement will close.
-
-                using (Process exeProcess = Process.Start(startInfo))
-
-                {
-                    exeProcess.WaitForExit();
-                }
-            }
-
-            catch (Exception exp)
-
-            {
-                throw exp;
+                if (exeProcess != null) exeProcess.WaitForExit();
             }
         }
 
